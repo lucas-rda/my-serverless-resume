@@ -1,6 +1,6 @@
 # AWS Serverless Resume Website
 
-![Project Architecture](my-serverless-resume/architecture.jpg)
+![Project Architecture](./architecture.JPG)
 
 ## Project Overview
 A cloud-based resume website with a visitor counter and location tracking, built using AWS serverless technologies. This project demonstrates practical experience with AWS services, API development, and full-stack implementation.
