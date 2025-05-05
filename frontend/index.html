@@ -1,1 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lucas Albuquerque – Web Resume</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f9f9f9;
+      --text-color: #222;
+      --accent-color: #0056d2;
+      --card-bg: #ffffff;
+    }
 
+    body.dark {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --accent-color: #4f9cff;
+      --card-bg: #1e1e1e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background 0.3s, color 0.3s;
+    }
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .controls button {
+      background: none;
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 960px;
+      margin: auto;
+      background: var(--card-bg);
+      padding: 40px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+    }
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .header .left, .header .right {
+      font-size: 14px;
+      color: #888;
+    }
+    .header h1 {
+      width: 100%;
+      font-size: 32px;
+      margin: 10px 0;
+      color: var(--text-color);
+    }
+    .summary {
+      font-style: italic;
+      font-size: 16px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 20px;
+      color: var(--accent-color);
+      margin-top: 40px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    h3 {
+      margin-top: 20px;
+      font-size: 18px;
+      color: var(--text-color);
+    }
+    em {
+      font-size: 14px;
+      color: #aaa;
+    }
+    ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+    ul li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+    .skills p {
+      margin: 10px 0;
+    }
+    .skills p strong {
+      font-weight: 700;
+    }
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 600px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header h1 {
+        text-align: left;
+      }
+    }
+  
+
+.controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 100;
+  padding: 10px 0;
+}
+
+/* Hover effects for navigation clarity */
+h2:hover,
+h3:hover {
+  background-color: rgba(0, 86, 210, 0.05);
+  transition: background-color 0.3s;
+}
+
+/* Print-friendly styles */
+@media print {
+  .controls {
+    display: none;
+  }
+  body {
+    background: white;
+    color: black;
+  }
+  a {
+    color: black;
+    text-decoration: underline;
+  }
+}
+
+</style>
+</head>
+<body>
+  <div class="controls">
+    <div style="flex-grow: 1;">
+      <button onclick="showSection('resume')" id="resumeBtn" title="Show resume">📄 Resume</button>
+      <button onclick="showSection('view')" id="viewBtn" title="Show view counter">👁️ View Counter</button>
+    </div>
+    <button onclick="toggleLanguage()" id="langBtn" title="Choose language">en / pt-br</button>
+    <button onclick="document.body.classList.toggle('dark')" id="darkModeBtn" title="Toggle dark mode on/off">🌗</button>
+    <button onclick="window.print()" title="Print as PDF">🖨️ PDF</button>
+  </div>
+
+  <div class="container" id="resume-content">
+    <div class="header">
+      <div class="left">
+        <span data-en="Alagoas, Brazil" data-pt="Alagoas, Brasil">Alagoas, Brasil</span><br>
+        lucasribeirodealbuquerque@gmail.com
+      </div>
+      <h1>Lucas Ribeiro de Albuquerque</h1>
+      <div class="right">
+        <a href="https://lucas-albuquerque.com" target="_blank">lucas-albuquerque.com</a><br>
+        <a href="https://linkedin.com/in/my-name" target="_blank">linkedin.com/in/my-name</a><br>
+        <a href="https://github.com/lucas-rda" target="_blank">github.com/lucas-rda</a><br>
+      </div>
+    </div>     
+
+
+
+
+
+    <div class="summary" data-en="Certified cloud enthusiast with 3+ years of international IT support experience. I'm transitioning into cloud architecture, bringing a user-centric mindset, strong troubleshooting skills, and multilingual communication to build efficient, scalable solutions." data-pt="Entusiasta certificado em nuvem com mais de 3 anos de experiência em suporte de TI internacional. Estou em transição para arquitetura em nuvem, trazendo uma mentalidade centrada no usuário, fortes habilidades de resolução de problemas e comunicação multilíngue para construir soluções eficientes e escaláveis."></div>
+    <h2 data-en="Relevant Experience" data-pt="Experiência Relevante"></h2>
+
+    <h3 data-en="DXC Technology – Trilingual Help Desk Analyst" data-pt="DXC Technology – Analista de Suporte Trilíngue"></h3>
+    <p><em>April 2021 – September 2024</em></p>
+    <ul>
+      <li data-en="Provided technical support in Portuguese, Spanish, and English for global clients" data-pt="Forneceu suporte técnico em português, espanhol e inglês para clientes globais"></li>
+      <li data-en="Troubleshot and resolved IT issues across hardware, software, and network platforms" data-pt="Diagnosticou e resolveu problemas de TI em hardware, software e redes"></li>
+      <li data-en="Ensured high customer satisfaction and timely response via service management tools" data-pt="Assegurou alta satisfação do cliente e respostas rápidas através de ferramentas de gestão de serviços"></li>
+    </ul>
+
+    <h2 data-en="Education & Certifications" data-pt="Educação e Certificações"></h2>
+    <ul>
+      <li><strong>AWS Certified Solutions Architect – Associate:</strong> <a href="https://credly.com/go/IOwoRLip3vZKzjucgS4QRw" target="_blank">View Certificate</a></li>
+      <li><strong>Google IT Support Professional Certificate:</strong> <a href="https://coursera.org/share/368318ec39ada874e2b7f15dc8b445ca" target="_blank">View Certificate</a></li>
+    </ul>
+
+    <h2 data-en="Technical Skills" data-pt="Habilidades Técnicas"></h2>
+    <div class="skills">
+      <p><strong data-en="Cloud Platforms:" data-pt="Plataformas de Nuvem:"></strong> <span data-en="AWS (EC2, S3, RDS, IAM, VPC, Lambda, Route53, CloudWatch)" data-pt="AWS (EC2, S3, RDS, IAM, VPC, Lambda, Route53, CloudWatch)"></span></p>
+      <p><strong data-en="Monitoring & Tools:" data-pt="Monitoramento & Ferramentas:"></strong> <span data-en="CloudWatch, basic Prometheus & Grafana, ServiceNow" data-pt="CloudWatch, Prometheus básico & Grafana, ServiceNow"></span></p>
+      <p><strong data-en="Support Tools:" data-pt="Ferramentas de Suporte:"></strong> <span data-en="Active Directory, Microsoft 365, VPN, Remote Desktop, Ticketing Systems" data-pt="Active Directory, Microsoft 365, VPN, Área de Trabalho Remota, Sistemas de Chamados"></span></p>
+      <p><strong data-en="Languages & Dev Tools:" data-pt="Linguagens & Ferramentas de Desenvolvimento:"></strong> <span data-en="Basic Bash, HTML, CSS, Git" data-pt="Bash básico, HTML, CSS, Git"></span></p>
+    </div>
+
+    <h2 data-en="Languages" data-pt="Idiomas"></h2>
+    <ul>
+      <li data-en="English: Conversational" data-pt="Inglês: Intermediário"></li>
+      <li data-en="Portuguese: Native" data-pt="Português: Nativo"></li>
+      <li data-en="Spanish: Fluent" data-pt="Espanhol: Fluente"></li>
+    </ul>
+  </div>
+  <div class="container" id="view-counter" style="display: none;">
+    <h2 data-en="Total Views: " data-pt="Total de Visitas: ">Total Views<strong id="total-views" style="font-weight: normal; display: inline;">Loading...</strong></h2>
+    <strong id="total-views">Loading...</strong>
+    <br> 
+    <br> 
+    <h3 class="text-xl font-semibold mb-2" data-en="👋Recent Visitors:" data-pt="👋Visitantes Recentes:">Recent Visitors</h3>
+    <ul id="recent-visitors" class="list-disc pl-5 mb-4"></ul>
+    <p id="error-message" class="text-red-500" style="display: none;" data-en="Failed to load visitor data. Please try again later." data-pt="Falha ao carregar dados do visitante. Por favor, tente novamente mais tarde."></p>
+  </div>
+<script>
+    let lang = 'en';
+
+    function toggleLanguage() {
+      lang = lang === 'en' ? 'pt' : 'en';
+      document.querySelectorAll('[data-en]').forEach(el => {
+        el.innerText = el.dataset[lang];
+      });
+      document.getElementById('langBtn').innerText = lang === 'en' ? 'en / pt-br' : 'pt-br / en';
+      updateNavLabels();
+    }
+  
+    function updateNavLabels() {
+      document.getElementById('resumeBtn').innerText = lang === 'en' ? '📄 Resume' : '📄 Currículo';
+      document.getElementById('viewBtn').innerText = lang === 'en' ? '👁️ View Counter' : '👁️ Visitantes';
+    }
+  
+    function showSection(section) {
+      const resume = document.getElementById('resume-content');
+      const view = document.getElementById('view-counter');
+
+      if (section === 'resume') {
+        resume.style.display = 'block';
+        view.style.display = 'none';
+      } else {
+        resume.style.display = 'none';
+        view.style.display = 'block';
+        // Fetch view data when switching to the view tab
+        fetchViewCount();
+      }
+    }
+  
+    // Init on load
+    toggleLanguage(); toggleLanguage(); // double toggle to apply language
+  </script>
+  <script>
+    let visitorLogged = false;
+  
+    function logVisitor() {
+      if (visitorLogged) return; // Prevent multiple logs
+      visitorLogged = true;
+  
+      fetch("https://s56wly25oe.execute-api.sa-east-1.amazonaws.com/prod/log-visit")
+        .then(res => res.json())
+        .then(data => {
+          console.log("Visitor logged:", data);
+        })
+        .catch(err => {
+          console.error("Failed to log visitor:", err);
+        });
+    }
+  
+    // Trigger only on first scroll or click
+    function setupVisitorLogging() {
+      window.addEventListener("scroll", logAndRemoveListeners, { once: true });
+      window.addEventListener("click", logAndRemoveListeners, { once: true });
+    }
+  
+    function logAndRemoveListeners() {
+      logVisitor();
+      window.removeEventListener("scroll", logAndRemoveListeners);
+      window.removeEventListener("click", logAndRemoveListeners);
+    }
+  
+    // Delay setup to avoid preloading
+    window.addEventListener("load", () => {
+      setTimeout(setupVisitorLogging, 1000); // wait 1s to reduce false triggers
+    });
+
+    function fetchViewCount() {
+      const totalViews = document.getElementById('total-views');
+      const recentVisitors = document.getElementById('recent-visitors');
+      const errorMessage = document.getElementById('error-message');
+      
+      // Show loading state
+      totalViews.innerText = 'Loading...';
+      recentVisitors.innerHTML = '<li>Loading visitor data...</li>';
+      
+      // Hide error message initially
+      errorMessage.style.display = 'none';
+      
+      // Fetch the visitor data from API
+      fetch("https://s56wly25oe.execute-api.sa-east-1.amazonaws.com/prod/get-visits")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Update total views
+          totalViews.innerText = data.totalCount || '0';
+          
+          // Clear loading message
+          recentVisitors.innerHTML = '';
+          
+          // Add recent visitors to the list (limit to latest 5, sorted by most recent)
+          if (data.recentVisitors && data.recentVisitors.length > 0) {
+            // Sort visitors by timestamp if available, assuming most recent first
+            const sortedVisitors = [...data.recentVisitors].sort((a, b) => {
+              // If timestamp is in data, use it for sorting
+              return (b.timestamp || 0) - (a.timestamp || 0);
+            });
+            
+            // Take only the latest 5 visitors
+            const latestVisitors = sortedVisitors.slice(0, 5);
+            
+            latestVisitors.forEach(visitor => {
+              const li = document.createElement('li');
+              li.innerHTML = `${visitor.flag || '🌎'} ${visitor.country || 'Unknown'} - ${visitor.city || 'Unknown'}`;
+              recentVisitors.appendChild(li);
+            });
+          } else {
+            const li = document.createElement('li');
+            li.innerText = lang === 'en' ? 'No recent visitors yet.' : 'Nenhum visitante recente ainda.';
+            recentVisitors.appendChild(li);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching visitor data:', error);
+          totalViews.innerText = '—';
+          recentVisitors.innerHTML = '';
+          errorMessage.style.display = 'block';
+        });
+    }
+
+    // Don't auto-fetch on page load to avoid unnecessary API calls
+    // We'll only fetch when user switches to the view tab
+  </script>
+
+</body>
+</html>
