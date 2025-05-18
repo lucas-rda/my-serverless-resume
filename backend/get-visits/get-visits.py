@@ -1,7 +1,7 @@
 import json
 import boto3
 from decimal import Decimal
-from datetime import datetime, timedelta
+from boto3.dynamodb.conditions import Key
 
 # Initialize services
 dynamodb = boto3.resource('dynamodb')
@@ -16,50 +16,48 @@ class DecimalEncoder(json.JSONEncoder):
 
 def lambda_handler(event, context):
     try:
-        # Get the total count
+        # Get total count
         try:
             response = table.get_item(Key={'id': 'TOTAL_COUNT'})
             total_count = response.get('Item', {}).get('count', 0)
         except Exception as e:
             print(f"Error getting total count: {e}")
             total_count = 0
-        
-        # Get recent visitors (last 10 excluding the TOTAL_COUNT item)
+
+        visitor_data = []
+
         try:
-            # Calculate timestamp for recent visitors (e.g., last 7 days)
-            cutoff_time = (datetime.utcnow() - timedelta(days=7)).isoformat()
-            
-            # Query recent visitors
+            # Query the GSI to get the latest 5 visitors across all IPs
+            # We need to do a "scan" on the GSI if there's no fixed partition key
             response = table.scan(
-                FilterExpression='attribute_exists(country) AND #id <> :total_id AND #ts > :cutoff',
-                ExpressionAttributeNames={
-                    '#id': 'id',
-                    '#ts': 'timestamp'
-                },
-                ExpressionAttributeValues={
-                    ':total_id': 'TOTAL_COUNT',
-                    ':cutoff': cutoff_time
-                },
-                Limit=10  # Limit to 10 most recent
+                IndexName='ip-timestamp-index'
             )
-            
-            recent_visitors = response.get('Items', [])
-            
-            # Sort by timestamp descending (most recent first)
-            recent_visitors.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
-            
-            # Format the response data
-            visitor_data = []
-            for visitor in recent_visitors:
+
+            all_items = response.get('Items', [])
+
+            # Filter out system or irrelevant items
+            recent_visitors = [
+                item for item in all_items
+                if item.get('id') != 'TOTAL_COUNT' and 'timestamp' in item
+            ]
+
+            # Sort by timestamp descending
+            sorted_visitors = sorted(
+                recent_visitors,
+                key=lambda x: x['timestamp'],
+                reverse=True
+            )
+
+            for visitor in sorted_visitors[:5]:
                 visitor_data.append({
                     'country': visitor.get('country', 'Unknown'),
                     'city': visitor.get('city', 'Unknown'),
                     'flag': visitor.get('flag', '🌎'),
                     'timestamp': visitor.get('timestamp')
                 })
-                
+
         except Exception as e:
-            print(f"Error getting recent visitors: {e}")
+            print(f"Error getting recent visitors via GSI: {e}")
             visitor_data = []
 
         return {
