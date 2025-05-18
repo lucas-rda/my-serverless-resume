@@ -20,7 +20,7 @@ jobs:
           
       - name: Deploy website to S3
         run: |
-          aws s3 cp index.html s3://your-resume-bucket/ --cache-control "max-age=3600"
+          aws s3 cp index.html s3://resume-frontend-dev-lucas/ --cache-control "max-age=3600"
           
       - name: Update deployment timestamp
         run: |
@@ -29,4 +29,4 @@ jobs:
       - name: Create deployment record
         run: |
           echo "{\"lastDeploy\":\"${{ env.DEPLOY_TIMESTAMP }}\"}" > deployment-info.json
-          aws s3 cp deployment-info.json s3://your-resume-bucket/
+          aws s3 cp deployment-info.json s3://resume-frontend-dev-lucas/
