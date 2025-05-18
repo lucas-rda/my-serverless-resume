@@ -182,7 +182,7 @@ h3:hover {
       <h1>Lucas Ribeiro de Albuquerque</h1>
       <div class="right">
         <a href="https://lucas-albuquerque.com" target="_blank">lucas-albuquerque.com</a><br>
-        <a href="https://linkedin.com/in/my-name" target="_blank">linkedin.com/in/my-name</a><br>
+        <a href="https://www.linkedin.com/in/lucasribeiroa/" target="_blank">linkedin.com/in/lucasribeiroa/</a><br>
         <a href="https://github.com/lucas-rda" target="_blank">github.com/lucas-rda</a><br>
       </div>
     </div>     
@@ -231,6 +231,26 @@ h3:hover {
     <h3 class="text-xl font-semibold mb-2" data-en="👋Recent Visitors:" data-pt="👋Visitantes Recentes:">Recent Visitors</h3>
     <ul id="recent-visitors" class="list-disc pl-5 mb-4"></ul>
     <p id="error-message" class="text-red-500" style="display: none;" data-en="Failed to load visitor data. Please try again later." data-pt="Falha ao carregar dados do visitante. Por favor, tente novamente mais tarde."></p>
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; font-size: 14px; text-align: center;">
+      <p data-en="This website is powered by AWS Serverless architecture using Cloufront, API Gateway, Lambda, and DynamoDB." 
+         data-pt="Este website é desenvolvido com arquitetura Serverless da AWS utilizando Cloudfront, API Gateway, Lambda e DynamoDB."></p>
+      <p>
+        <span data-en="For more information about this project, visit " 
+              data-pt="Para mais informações sobre este projeto, visite "></span>
+        <a href="https://github.com/lucas-rda/my-serverless-resume/" target="_blank">github.com/lucas-rda/my-serverless-resume</a>
+      </p>
+      
+      <!-- CI/CD Status Badge Section -->
+      <div class="ci-cd-status" style="margin-top: 15px; padding: 10px; background-color: var(--card-bg); border: 1px solid #ddd; border-radius: 6px; display: inline-block;">
+        <p style="margin: 0 0 8px 0;" data-en="CI/CD Pipeline Status:" data-pt="Status da Pipeline CI/CD:"></p>
+        <img src="https://github.com/lucas-rda/my-serverless-resume/workflows/Deploy%20Resume/badge.svg" alt="CI/CD Status" style="margin-bottom: 5px;">
+        <p style="margin: 5px 0 0 0; font-size: 12px;">
+          <span data-en="Last deployed:" data-pt="Última implantação:"></span>
+          <span id="last-deployment">Loading...</span>
+        </p>
+      </div>
+    </div>
+  </div>
   </div>
 <script>
     let lang = 'en';
@@ -261,6 +281,8 @@ h3:hover {
         view.style.display = 'block';
         // Fetch view data when switching to the view tab
         fetchViewCount();
+        // Fetch deployment info when switching to the view tab
+        fetchDeploymentInfo();
       }
     }
   
@@ -313,7 +335,7 @@ h3:hover {
       // Hide error message initially
       errorMessage.style.display = 'none';
       
-      // Fetch the visitor data from API
+      // Fetch the visitor data from your API
       fetch("https://s56wly25oe.execute-api.sa-east-1.amazonaws.com/prod/get-visits")
         .then(response => {
           if (!response.ok) {
@@ -331,8 +353,9 @@ h3:hover {
           // Add recent visitors to the list (limit to latest 5, sorted by most recent)
           if (data.recentVisitors && data.recentVisitors.length > 0) {
             // Sort visitors by timestamp if available, assuming most recent first
+            // If your API already returns sorted data, you can skip this step
             const sortedVisitors = [...data.recentVisitors].sort((a, b) => {
-              // If timestamp is in data, use it for sorting
+              // If you have timestamp in your data, use it for sorting
               return (b.timestamp || 0) - (a.timestamp || 0);
             });
             
@@ -355,6 +378,43 @@ h3:hover {
           totalViews.innerText = '—';
           recentVisitors.innerHTML = '';
           errorMessage.style.display = 'block';
+        });
+    }
+
+    // Function to fetch and display the last deployment time
+    function fetchDeploymentInfo() {
+      const lastDeploymentElement = document.getElementById('last-deployment');
+      
+      // Show loading state
+      lastDeploymentElement.innerText = 'Loading...';
+      
+      // Fetch the deployment info from your S3 bucket
+      fetch("https://resume-frontend-dev-lucas.s3-website-sa-east-1.amazonaws.com/deployment-info.json")
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.timestamp) {
+            // Format the timestamp into a readable date/time
+            const deployDate = new Date(data.timestamp);
+            const options = { 
+              year: 'numeric', 
+              month: 'short', 
+              day: 'numeric', 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            };
+            lastDeploymentElement.innerText = deployDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR', options);
+          } else {
+            lastDeploymentElement.innerText = lang === 'en' ? 'Not available' : 'Não disponível';
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching deployment info:', error);
+          lastDeploymentElement.innerText = lang === 'en' ? 'Unable to load' : 'Não foi possível carregar';
         });
     }
 
