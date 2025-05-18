@@ -243,7 +243,7 @@ h3:hover {
       <!-- CI/CD Status Badge Section -->
       <div class="ci-cd-status" style="margin-top: 15px; padding: 10px; background-color: var(--card-bg); border: 1px solid #ddd; border-radius: 6px; display: inline-block;">
         <p style="margin: 0 0 8px 0;" data-en="CI/CD Pipeline Status:" data-pt="Status da Pipeline CI/CD:"></p>
-        <img src="https://github.com/lucas-rda/my-serverless-resume/workflows/Deploy%20Resume/badge.svg" alt="CI/CD Status" style="margin-bottom: 5px;">
+        <img src="https://github.com/lucas-rda/my-serverless-resume/actions/workflows/deploy.yml/badge.svg" alt="CI/CD Status" style="margin-bottom: 5px;">
         <p style="margin: 5px 0 0 0; font-size: 12px;">
           <span data-en="Last deployed:" data-pt="Última implantação:"></span>
           <span id="last-deployment">Loading...</span>
@@ -383,40 +383,47 @@ h3:hover {
 
     // Function to fetch and display the last deployment time
     function fetchDeploymentInfo() {
-      const lastDeploymentElement = document.getElementById('last-deployment');
-      
-      // Show loading state
-      lastDeploymentElement.innerText = 'Loading...';
-      
-      // Fetch the deployment info from your S3 bucket
-      fetch("https://resume-frontend-dev-lucas.s3-website-sa-east-1.amazonaws.com/deployment-info.json")
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data && data.timestamp) {
-            // Format the timestamp into a readable date/time
-            const deployDate = new Date(data.timestamp);
-            const options = { 
-              year: 'numeric', 
-              month: 'short', 
-              day: 'numeric', 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            };
-            lastDeploymentElement.innerText = deployDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR', options);
-          } else {
-            lastDeploymentElement.innerText = lang === 'en' ? 'Not available' : 'Não disponível';
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching deployment info:', error);
-          lastDeploymentElement.innerText = lang === 'en' ? 'Unable to load' : 'Não foi possível carregar';
-        });
-    }
+  const lastDeploymentElement = document.getElementById('last-deployment');
+  
+  // Show loading state
+  lastDeploymentElement.innerText = 'Loading...';
+  
+  // Fetch with a timeout to avoid hanging
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Request timed out')), 5000)
+  );
+  
+  Promise.race([
+    fetch("https://resume-frontend-dev-lucas.s3-website-sa-east-1.amazonaws.com/deployment-info.json"),
+    timeoutPromise
+  ])
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data && data.timestamp) {
+        const deployDate = new Date(data.timestamp);
+        const options = { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        };
+        lastDeploymentElement.innerText = deployDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'pt-BR', options);
+        console.log("Deployment info loaded successfully:", data);
+      } else {
+        lastDeploymentElement.innerText = lang === 'en' ? 'Not available' : 'Não disponível';
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching deployment info:', error);
+      lastDeploymentElement.innerText = lang === 'en' ? 'Unable to load' : 'Não foi possível carregar';
+    });
+}
 
     // Don't auto-fetch on page load to avoid unnecessary API calls
     // We'll only fetch when user switches to the view tab
