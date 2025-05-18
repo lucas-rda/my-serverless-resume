@@ -394,7 +394,7 @@ h3:hover {
   );
   
   Promise.race([
-    fetch("http://resume-frontend-dev-lucas.s3.sa-east-1.amazonaws.com/deployment-info.json"),
+    fetch("https://resume-frontend-dev-lucas.s3.sa-east-1.amazonaws.com/deployment-info.json"),
     timeoutPromise
   ])
     .then(response => {
