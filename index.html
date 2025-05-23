@@ -167,7 +167,7 @@ h3:hover {
     <div style="flex-grow: 1;">
       <button onclick="showSection('resume')" id="resumeBtn" title="Show resume">📄 Resume</button>
       <button onclick="showSection('view')" id="viewBtn" title="Show view counter">👁️ View Counter</button>
-      <button onclick="window.location.href='https://meet.lucas-albuquerque.com'" title="Go to Jitsi Meet instance">🎥 JitsiMeet</button>
+      <button onclick="checkJitsiServer()" title="Go to Jitsi Meet instance">🎥 JitsiMeet</button>
     </div>
     <button onclick="toggleLanguage()" id="langBtn" title="Choose language">en / pt-br</button>
     <button onclick="document.body.classList.toggle('dark')" id="darkModeBtn" title="Toggle dark mode on/off">🌗</button>
@@ -429,8 +429,28 @@ h3:hover {
     });
 }
 
-    // Don't auto-fetch on page load to avoid unnecessary API calls
-    // We'll only fetch when user switches to the view tab
+function checkJitsiServer() {
+  const jitsiUrl = "https://meet.lucas-albuquerque.com"; // your Jitsi subdomain
+  const timeout = 3000; // ms
+
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  // Set timeout
+  setTimeout(() => controller.abort(), timeout);
+
+  fetch(jitsiUrl, { method: 'HEAD', mode: 'no-cors', signal })
+    .then(() => {
+      // If fetch doesn't error, assume it's up and redirect
+      window.location.href = jitsiUrl;
+    })
+    .catch(() => {
+      // Show an alert or custom message if unreachable
+      alert(lang === 'en' 
+        ? "The video meeting server is currently offline. Please try again later." 
+        : "O servidor de videoconferência está atualmente offline. Por favor, tente novamente mais tarde.");
+    });
+}
   </script>
 
 </body>
