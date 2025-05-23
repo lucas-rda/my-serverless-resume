@@ -18,6 +18,7 @@ A cloud-based resume website with a visitor counter and location tracking, built
 - CI/CD pipeline using GitHub Actions
 - Multi-language support (English/Portuguese)
 - Mobile-responsive design with dark mode
+- Subdomain linked to [JitsiMeet self-hosted server](https://github.com/lucas-rda/jitsi-meet-aws)
 
 ## Architecture
 This project utilizes the following AWS services:
